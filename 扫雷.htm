@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="GBK" />
+    <title>扫雷</title>
+</head>
+<body style="background-color: White">
+    <div>
+        <h2>
+            扫雷</h2>
+        <hr />
+    </div>
+    <div align="center">
+        <div>
+            <select id="lvl">
+                <option>简单</option>
+                <option>一般</option>
+                <option>困难</option>
+            </select>
+            <input id="go" onclick="game_start()" type="button" value="走起！ " />
+        </div>
+        <div id="viewer" style="width: 420px; height: 420px">
+        </div>
+        <div id="state" style="display: none">
+            地雷总数：<b id="boom_total"></b> &nbsp; 剩余方块：<b id="block_count"></b>
+        </div>
+        <div id="messages" style="display: none; color: Red; font-weight: bolder">
+        </div>
+    </div>
+    <script type="text/javascript">
+        var total; //地雷总数
+        var count; //剩余方块
+        var l_count; //行与列的数量
+        var x, y; //取得被选方块的横纵坐标
+        var block = new Array(); //方块的值
+        var boom = "●";
+
+        function game_start() {
+            document.getElementById("messages").innerHTML = "";
+            document.getElementById("messages").style.display = "none";
+            var selected_index = document.getElementById("lvl").selectedIndex;
+            l_count = (selected_index + 1) * (7 - selected_index);
+            var game_character = "";
+            var block_id = "";
+            total = 1 << (selected_index + 4);
+            count = Math.pow(l_count, 2);
+            var a = count - total;
+            var b = total;
+            var index = 0;
+            var temp = new Array();
+            while (index < count) {
+                switch (parseInt(Math.random() * 2)) {
+                    case 0:
+                        if (a == 0) continue;
+                        temp[index] = "";
+                        index++;
+                        a--;
+                        break;
+                    case 1:
+                        if (b == 0) continue;
+                        temp[index] = boom;
+                        index++;
+                        b--;
+                        break;
+                }
+            }
+            for (var i = 0; i < l_count; i++) {
+                block[i] = new Array();
+                for (var j = 0; j < l_count; j++) {
+                    block_id = "block" + i + "_" + j;
+                    game_character += "<input id=" + block_id + " onclick='block_click()' type='button' value=' ' style='background-color:#AAAAFF;width:25px;height:25px'/>";
+                    block[i][j] = temp[--index];
+                }
+                game_character += "<br/>";
+            }
+            document.getElementById("boom_total").innerHTML = total;
+            document.getElementById("block_count").innerHTML = count;
+            document.getElementById("viewer").innerHTML = game_character;
+            document.getElementById("state").style.display = "block";
+            document.getElementById("go").value = "重来！";
+        }
+
+        function block_click() {
+            var block_id = document.activeElement.id.toString();
+            x = parseInt(block_id.substring(5, block_id.indexOf("_")));
+            y = parseInt(block_id.substring(block_id.indexOf("_") + 1));
+            count = Math.pow(l_count, 2);
+            document.activeElement.style.backgroundColor = "#FFFFFF";
+            //判断是不是雷
+            //若是，背景变为红色，显示所有雷，禁用所有方块；若不是，显示周围雷数
+            if (block[x][y] === boom) {
+                for (var i = 0; i < l_count; i++)
+                    for (var j = 0; j < l_count; j++) {
+                        if (block[i][j] === boom) {
+                            document.getElementById("block" + i + "_" + j).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("block" + i + "_" + j).value = block[i][j];
+                        }
+                        document.getElementById("block" + i + "_" + j).disabled = "disabled";
+                    }
+                document.activeElement.style.backgroundColor = "#FF0000";
+                document.getElementById("messages").innerHTML = "地雷爆炸了，请重新开始！";
+                document.getElementById("messages").style.display = "block";
+            } else {
+                seek(x, y);
+                for (var i = 0; i < l_count; i++)
+                    for (var j = 0; j < l_count; j++)
+                        if (document.getElementById("block" + i + "_" + j).getAttributeNode("disabled"))
+                            document.getElementById("block_count").innerHTML = --count;
+                if (!(count - total))
+                    document.getElementById("messages").innerHTML = "厉害！再来一局吧！";
+            }
+        }
+
+        function seek(m, n) {
+            var boom_count = 0;
+            if (m > 0 && block[m - 1][n] === boom)//←
+                boom_count++;
+            if (m > 0 && n > 0 && block[m - 1][n - 1] === boom)//↖
+                boom_count++;
+            if (n > 0 && block[m][n - 1] === boom)//↑
+                boom_count++;
+            if (m < l_count - 1 && n > 0 && block[m + 1][n - 1] === boom)//↗
+                boom_count++;
+            if (m < l_count - 1 && block[m + 1][n] === boom)//→
+                boom_count++;
+            if (m < l_count - 1 && n < l_count - 1 && block[m + 1][n + 1] === boom)//↘
+                boom_count++;
+            if (n < l_count - 1 && block[m][n + 1] === boom)//↓
+                boom_count++;
+            if (m > 0 && n < l_count - 1 && block[m - 1][n + 1] === boom)//↙
+                boom_count++;
+            document.getElementById("block" + m + "_" + n).style.backgroundColor = "#FFFFFF";
+            document.getElementById("block" + m + "_" + n).value = boom_count ? boom_count.toString() : " ";
+            document.getElementById("block" + m + "_" + n).disabled = "disabled";
+            if (!boom_count) {
+                if (m > 0 && m <= x) seek(m - 1, n);
+                if (m > 0 && n > 0 && m <= x && n <= y) seek(m - 1, n - 1);
+                if (n > 0 && n <= y) seek(m, n - 1);
+                if (m < l_count - 1 && n > 0 && m >= x && n <= y) seek(m + 1, n - 1);
+                if (m < l_count - 1 && m >= x) seek(m + 1, n);
+                if (m < l_count - 1 && n < l_count - 1 && m >= x && n >= y) seek(m + 1, n + 1);
+                if (n < l_count - 1 && n >= y) seek(m, n + 1);
+                if (m > 0 && n < l_count - 1 && m <= x && n >= y) seek(m - 1, n + 1);
+            }
+        }
+    </script>
+    <div style="bottom: 0px; height: 50px; position: static">
+    </div>
+    <div align="center" style="width: 100%; padding: 10px 0px; bottom: 0px; display: block;
+        position: fixed; background-color: White">
+        <hr style="margin-right: 15px" />
+        Coded by HerveyHall</div>
+</body>
+</html>
