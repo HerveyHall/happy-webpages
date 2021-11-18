@@ -98,7 +98,7 @@
                         }
                         document.getElementById("block" + i + "_" + j).disabled = "disabled";
                     }
-                document.activeElement.style.backgroundColor = "#FF0000";
+                document.getElementById(block_id).style.backgroundColor = "#FF0000";
                 document.getElementById("messages").innerHTML = "地雷爆炸了，请重新开始！";
                 document.getElementById("messages").style.display = "block";
             } else {
