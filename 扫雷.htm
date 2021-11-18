@@ -1,39 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="GBK" />
-    <title>É¨À×</title>
+    <meta charset="utf-8" />
+    <title>æ‰«é›·</title>
 </head>
 <body style="background-color: White">
     <div>
         <h2>
-            É¨À×</h2>
+            æ‰«é›·
+        </h2>
         <hr />
     </div>
     <div align="center">
         <div>
             <select id="lvl">
-                <option>¼òµ¥</option>
-                <option>Ò»°ã</option>
-                <option>À§ÄÑ</option>
+                <option>ç®€å•</option>
+                <option>ä¸€èˆ¬</option>
+                <option>å›°éš¾</option>
             </select>
-            <input id="go" onclick="game_start()" type="button" value="×ßÆğ£¡ " />
+            <input id="go" onclick="game_start()" type="button" value="èµ°èµ·ï¼ " />
         </div>
         <div id="viewer" style="width: 420px; height: 420px">
         </div>
         <div id="state" style="display: none">
-            µØÀ××ÜÊı£º<b id="boom_total"></b> &nbsp; Ê£Óà·½¿é£º<b id="block_count"></b>
+            åœ°é›·æ€»æ•°ï¼š<b id="boom_total"></b> &nbsp; å‰©ä½™æ–¹å—ï¼š<b id="block_count"></b>
         </div>
         <div id="messages" style="display: none; color: Red; font-weight: bolder">
         </div>
     </div>
     <script type="text/javascript">
-        var total; //µØÀ××ÜÊı
-        var count; //Ê£Óà·½¿é
-        var l_count; //ĞĞÓëÁĞµÄÊıÁ¿
-        var x, y; //È¡µÃ±»Ñ¡·½¿éµÄºá×İ×ø±ê
-        var block = new Array(); //·½¿éµÄÖµ
-        var boom = "¡ñ";
+        var total; //åœ°é›·æ€»æ•°
+        var count; //å‰©ä½™æ–¹å—
+        var l_count; //è¡Œä¸åˆ—çš„æ•°é‡
+        var x, y; //å–å¾—è¢«é€‰æ–¹å—çš„æ¨ªçºµåæ ‡
+        var block = new Array(); //æ–¹å—çš„å€¼
+        var boom = "â—";
 
         function game_start() {
             document.getElementById("messages").innerHTML = "";
@@ -77,7 +78,7 @@
             document.getElementById("block_count").innerHTML = count;
             document.getElementById("viewer").innerHTML = game_character;
             document.getElementById("state").style.display = "block";
-            document.getElementById("go").value = "ÖØÀ´£¡";
+            document.getElementById("go").value = "é‡æ¥ï¼";
         }
 
         function block_click() {
@@ -86,8 +87,8 @@
             y = parseInt(block_id.substring(block_id.indexOf("_") + 1));
             count = Math.pow(l_count, 2);
             document.activeElement.style.backgroundColor = "#FFFFFF";
-            //ÅĞ¶ÏÊÇ²»ÊÇÀ×
-            //ÈôÊÇ£¬±³¾°±äÎªºìÉ«£¬ÏÔÊ¾ËùÓĞÀ×£¬½ûÓÃËùÓĞ·½¿é£»Èô²»ÊÇ£¬ÏÔÊ¾ÖÜÎ§À×Êı
+            //åˆ¤æ–­æ˜¯ä¸æ˜¯é›·
+            //è‹¥æ˜¯ï¼ŒèƒŒæ™¯å˜ä¸ºçº¢è‰²ï¼Œæ˜¾ç¤ºæ‰€æœ‰é›·ï¼Œç¦ç”¨æ‰€æœ‰æ–¹å—ï¼›è‹¥ä¸æ˜¯ï¼Œæ˜¾ç¤ºå‘¨å›´é›·æ•°
             if (block[x][y] === boom) {
                 for (var i = 0; i < l_count; i++)
                     for (var j = 0; j < l_count; j++) {
@@ -98,7 +99,7 @@
                         document.getElementById("block" + i + "_" + j).disabled = "disabled";
                     }
                 document.activeElement.style.backgroundColor = "#FF0000";
-                document.getElementById("messages").innerHTML = "µØÀ×±¬Õ¨ÁË£¬ÇëÖØĞÂ¿ªÊ¼£¡";
+                document.getElementById("messages").innerHTML = "åœ°é›·çˆ†ç‚¸äº†ï¼Œè¯·é‡æ–°å¼€å§‹ï¼";
                 document.getElementById("messages").style.display = "block";
             } else {
                 seek(x, y);
@@ -107,27 +108,27 @@
                         if (document.getElementById("block" + i + "_" + j).getAttributeNode("disabled"))
                             document.getElementById("block_count").innerHTML = --count;
                 if (!(count - total))
-                    document.getElementById("messages").innerHTML = "À÷º¦£¡ÔÙÀ´Ò»¾Ö°É£¡";
+                    document.getElementById("messages").innerHTML = "å‰å®³ï¼å†æ¥ä¸€å±€å§ï¼";
             }
         }
 
         function seek(m, n) {
             var boom_count = 0;
-            if (m > 0 && block[m - 1][n] === boom)//¡û
+            if (m > 0 && block[m - 1][n] === boom)//â†
                 boom_count++;
-            if (m > 0 && n > 0 && block[m - 1][n - 1] === boom)//¨I
+            if (m > 0 && n > 0 && block[m - 1][n - 1] === boom)//â†–
                 boom_count++;
-            if (n > 0 && block[m][n - 1] === boom)//¡ü
+            if (n > 0 && block[m][n - 1] === boom)//â†‘
                 boom_count++;
-            if (m < l_count - 1 && n > 0 && block[m + 1][n - 1] === boom)//¨J
+            if (m < l_count - 1 && n > 0 && block[m + 1][n - 1] === boom)//â†—
                 boom_count++;
-            if (m < l_count - 1 && block[m + 1][n] === boom)//¡ú
+            if (m < l_count - 1 && block[m + 1][n] === boom)//â†’
                 boom_count++;
-            if (m < l_count - 1 && n < l_count - 1 && block[m + 1][n + 1] === boom)//¨K
+            if (m < l_count - 1 && n < l_count - 1 && block[m + 1][n + 1] === boom)//â†˜
                 boom_count++;
-            if (n < l_count - 1 && block[m][n + 1] === boom)//¡ı
+            if (n < l_count - 1 && block[m][n + 1] === boom)//â†“
                 boom_count++;
-            if (m > 0 && n < l_count - 1 && block[m - 1][n + 1] === boom)//¨L
+            if (m > 0 && n < l_count - 1 && block[m - 1][n + 1] === boom)//â†™
                 boom_count++;
             document.getElementById("block" + m + "_" + n).style.backgroundColor = "#FFFFFF";
             document.getElementById("block" + m + "_" + n).value = boom_count ? boom_count.toString() : " ";
